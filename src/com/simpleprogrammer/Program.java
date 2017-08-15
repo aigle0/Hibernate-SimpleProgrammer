@@ -20,6 +20,7 @@ public class Program {
 		PopulateSampleData();
 		
 		Session session = HibernateUtilities.getSessionFactory().openSession();
+		session.enableFilter("nameFilter").setParameter("name", "o%");//how to use a filter and how to add in your user hbm conf
 		session.beginTransaction();
 		
 		//Query query =session.getNamedQuery("AllGoalAlerts");
@@ -83,12 +84,16 @@ public class Program {
 			System.out.println(user.getName());
 		}*/
 		
-		Query query = session.createSQLQuery("SELECT * FROM Users").addEntity(User.class);
+		//Query query = session.createSQLQuery("SELECT * FROM Users").addEntity(User.class);
+		Query query = session.createQuery("FROM User");
+
 		List<User> users = query.list();
 		for(User user : users){
 			System.out.println(user.getName());
 		}
 		
+		User u = (User) session.load(User.class, 1);
+		System.out.println(u.getName());
 		
 		session.getTransaction().commit();
 		session.close();
